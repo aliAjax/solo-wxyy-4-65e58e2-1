@@ -20,6 +20,8 @@
       </div>
     </header>
 
+    <div id="message" class="message" role="status" aria-live="polite"></div>
+
     <section class="controls">
       <label>剧目片段<input id="pieceName" placeholder="如：出场锣鼓-慢起"></label>
       <label>速度BPM<input id="bpmInput" type="number" min="40" max="220" value="96"></label>
@@ -35,9 +37,30 @@
       <label>难点批注<input id="noteInput" placeholder="如：第2小节小锣晚半拍"></label>
     </section>
 
+    <section class="arranger" aria-label="排练编排工作台">
+      <div class="arranger-head">
+        <div>
+          <h2>排练编排</h2>
+          <p class="arranger-sub">把四个小节按顺序组成排练段，逐段设置速度、重复次数与衔接说明。</p>
+        </div>
+        <div class="arranger-actions">
+          <button id="addSegmentBtn" type="button" class="btn-secondary">添加段落</button>
+          <button id="playArrBtn" type="button">播放编排</button>
+        </div>
+      </div>
+      <div id="segmentList" class="segment-list"></div>
+    </section>
+
     <section class="stage">
       <aside class="segments">
-        <h2>已存方案</h2>
+        <div class="panel-head">
+          <h2>已存方案</h2>
+          <div class="panel-actions">
+            <button id="exportBtn" type="button">导出</button>
+            <button id="importBtn" type="button">导入</button>
+            <input id="importFile" type="file" accept="application/json,.json" hidden>
+          </div>
+        </div>
         <div id="savedList"></div>
       </aside>
       <section class="score">
