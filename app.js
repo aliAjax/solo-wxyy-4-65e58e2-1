@@ -109,7 +109,7 @@ function renderGrid() {
     const row = [`<div class="label-cell">${instrument.name}</div>`];
     for (let step = 0; step < steps; step += 1) {
       const value = state.pattern[rowIndex][step];
-      row.push(`<button class="cell ${value ? "filled" : ""}" type="button" data-row="${rowIndex}" data-step="${step}">${value}</button>`);
+      row.push(`<button class="cell ${value ? "filled" : ""}" type="button" data-row="${rowIndex}" data-step="${step}">${escapeHtml(value)}</button>`);
     }
     return row;
   });
@@ -575,6 +575,20 @@ importFile.addEventListener("change", () => {
     const result = validatePayload(payload);
     if (!result.ok) {
       showMessage(`${result.error}，导入已取消，当前方案保持原样。`, "error");
+      return;
+    }
+    // 同一文件内不允许出现相同编号：两份都不得进入列表，避免后者被误载入成前者
+    const seenIds = new Set();
+    const duplicatedNames = new Set();
+    payload.schemes.forEach((raw) => {
+      if (seenIds.has(raw.id)) duplicatedNames.add(String(raw.name));
+      seenIds.add(raw.id);
+    });
+    if (duplicatedNames.size) {
+      showMessage(
+        `文件内有多个方案使用相同编号（${[...duplicatedNames].map((name) => `「${name}」`).join("、")}），导入已取消，当前方案保持原样。`,
+        "error"
+      );
       return;
     }
     const existingIds = new Set(state.saved.map((entry) => entry.id));
